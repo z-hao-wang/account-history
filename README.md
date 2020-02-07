@@ -4,7 +4,10 @@ Works on bitmex
 
 ## usage
 clone this repo
-``
+```
 npm ci
-``
+node dist/index.js --key xxx --secret xxx
+```
+the output will be saved under dist/output.csv
+
 

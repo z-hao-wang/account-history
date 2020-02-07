@@ -29,25 +29,17 @@ interface dumpConfig {
 function createCSVWriter() {
   return csvWriter({
     // heads should match writeRow
-    headers: [
-      'date',
-      'change',
-      'balance',
-    ],
+    headers: ['date', 'change', 'balance'],
     sendHeaders: true,
   });
 }
 function writeRow(writer: any, row: any) {
-  writer.write([
-    row.ts,
-    row.changeAmount,
-    row.balance,
-  ]);
+  writer.write([row.ts, row.changeAmount, row.balance]);
 }
 
 async function main() {
   const { key, secret } = parseArgs();
-  if (!key || ! secret) {
+  if (!key || !secret) {
     console.error(`key and secret are required`);
     process.exit(1);
     return;
@@ -58,20 +50,17 @@ async function main() {
     apiSecret: secret,
   });
   const dataRaw = await bitmexRequest.getWalletHistory();
-  const data = _.map(dataRaw, (d) => ({
+  const data = _.map(dataRaw, d => ({
     ts: new Date(d.timestamp).toISOString(),
     changeAmount: d.amount / 100000000,
-    balance: d.walletBalance / 100000000
+    balance: d.walletBalance / 100000000,
   }));
   console.log(`data`, data);
   const writer = createCSVWriter();
-  writer.pipe(
-      fs.createWriteStream(__dirname + `/output.csv`),
-  );
+  writer.pipe(fs.createWriteStream(__dirname + `/output.csv`));
   _.each(data, (doc: any) => {
     writeRow(writer, doc);
   });
-
 }
 
 main();
